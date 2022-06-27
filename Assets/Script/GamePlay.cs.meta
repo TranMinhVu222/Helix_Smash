@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 0b3b0977b10a7374e9bdfd3d79aa37cf
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - ObDisk: {fileID: 100000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
