@@ -18,6 +18,7 @@ public class Ball : MonoBehaviour
     private State _currentState = State.Jump;
     private bool click;
     [SerializeField] private GamePlay disks;
+    [SerializeField] private 
     enum State
     {
         Jump,Fall,Smash,Die
@@ -68,25 +69,23 @@ public class Ball : MonoBehaviour
                 }
                 break;
             case State.Smash:
-                if (Input.GetMouseButtonUp(0))
-                {
-                    click = false;
-                }
                 if (Input.GetMouseButton(0))
                 {
-                    _smax -= 1.5f;
-                    int temp = 0;
-                    transform.position -= new Vector3(0, 1.5f, 0) * Time.deltaTime;
-                    if (transform.position.y > disks.DiskList[0].transform.position.y)
+                    int count = 0;
+                    transform.position -= new Vector3(0, 0.5f, 0)*0.5f;
+                    if (transform.position.y < disks.DiskList[0].transform.position.y)
                     {
                         Destroy(disks.DiskList[0]);
                         disks.DiskList.Remove(disks.DiskList[0]);
+                        count++;
                     }
-                }
-                if (click == false)
+                    _smax -= count * 1.5f;
+                } 
+                if (Input.GetMouseButtonUp(0))
                 {
-                    ChangeSate(State.Jump);
+                    ChangeSate(State.Fall);
                 }
+                Debug.Log("_smax= " + _smax);
                 break;
             case State.Die:
                 break;

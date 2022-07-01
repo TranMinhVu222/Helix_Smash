@@ -10,7 +10,6 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Vector3 positionCam;
     private void LateUpdate()
     {
-        Debug.Log( followDisk.DiskList[0].transform.position);
         transform.position = followDisk.DiskList[0].transform.position + positionCam;
     }
 }
