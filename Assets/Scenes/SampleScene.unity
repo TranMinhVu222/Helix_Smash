@@ -299,11 +299,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 32, y: 180, z: 0}
---- !u!1 &1552002144 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3126170933383940504, guid: 8b4608f79f12e5c45bb0c4c475af00d7, type: 3}
-  m_PrefabInstance: {fileID: 3126170934728803776}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1695159426
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,7 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DiskList: []
-  ObDisk: {fileID: 1552002144}
+  ObDisk: {fileID: 0}
   myColor: {fileID: 2100000, guid: 59ab1a9325227d14c99fc25c38bfd893, type: 2}
 --- !u!1 &2019012298
 GameObject:
@@ -497,6 +492,18 @@ PrefabInstance:
     - target: {fileID: 3126170933231111482, guid: 8b4608f79f12e5c45bb0c4c475af00d7, type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126170933231111482, guid: 8b4608f79f12e5c45bb0c4c475af00d7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126170933231111482, guid: 8b4608f79f12e5c45bb0c4c475af00d7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3126170933231111482, guid: 8b4608f79f12e5c45bb0c4c475af00d7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3126170933231111482, guid: 8b4608f79f12e5c45bb0c4c475af00d7, type: 3}
       propertyPath: m_LocalPosition.x

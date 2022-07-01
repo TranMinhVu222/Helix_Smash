@@ -33,7 +33,7 @@ public class GamePlay : MonoBehaviour
     {
         CreatDisk();
         MeshColor();
-        DiskList[0].SetActive(false);
+        // DiskList[0].SetActive(false);
     }
 
     public void Update()
@@ -45,8 +45,7 @@ public class GamePlay : MonoBehaviour
     {
         for (int i = 0; i <= 20; i++)
         {
-            GameObject cloneDisk = Instantiate(ObDisk, new Vector3(0, i * -1.5f, 0),
-                Quaternion.Euler(new Vector3(0, i * 10, 0)));
+            GameObject cloneDisk = Instantiate(ObDisk, new Vector3(0, i * -1.5f, 0), Quaternion.Euler(new Vector3(0, i * 10, 0)));
             DiskList.Add(cloneDisk);
         }
     }
