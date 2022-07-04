@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+using UnityEngine.UI;
+using DG.Tweening;
+using TMPro;
 
 public class Ball : MonoBehaviour
 {
@@ -15,11 +17,16 @@ public class Ball : MonoBehaviour
     private float yFall = 0;
     private float yJump =0;
     private float _s0 = 0;
-    private State _currentState = State.Jump;
+    private int checkDestroy;
+    private int countDestroy;
+    private bool checkFurry = false;
+    public State _currentState = State.Jump;
+    private int _undestroyable = 1;
     [SerializeField] private GamePlay disks;
-    enum State
+    [SerializeField] private Image uiFill;
+    public enum State
     {
-        Jump,Fall,Smash,Die
+        Jump,Fall,Smash,Fury,Die
     }
 
     void Start()
@@ -48,6 +55,7 @@ public class Ball : MonoBehaviour
                     ChangeSate(State.Smash);
                     return;
                 }
+                
                 break;
             case State.Fall:
                 //LAM CHO QUA BONG ROI XUONG
@@ -67,10 +75,13 @@ public class Ball : MonoBehaviour
                     ChangeSate(State.Smash);
                     return;
                 }
+                
                 break;
             case State.Smash:
                 if (Input.GetMouseButton(0))
                 {
+                    float time = 0;
+                    time += Time.deltaTime;
                     int count = 0;
                     transform.position -= new Vector3(0, 0.5f, 0)*0.5f;
                     if (transform.position.y < disks.DiskList[0].transform.position.y+0.5f)
@@ -78,18 +89,28 @@ public class Ball : MonoBehaviour
                         Destroy(disks.DiskList[0]);
                         disks.DiskList.Remove(disks.DiskList[0]);
                         count++;
+                        countDestroy++;
+                        uiFill.fillAmount += 3f*time;
                     }
+                    Debug.Log(countDestroy);
                     _smax -= count * 1f;
-                } 
+                }
                 if (Input.GetMouseButtonUp(0))
                 {
                     ChangeSate(State.Fall);
                     return;
                 }
+
+                if (uiFill.fillAmount==1)
+                {
+                    checkFurry = true;
+                }
+                break;
+            case State.Fury:
                 break;
             case State.Die:
                 gameObject.SetActive(false);
-                Debug.Log("Die");
+                disks.ChangeState(GamePlay.GameStates.Lose);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -107,13 +128,18 @@ public class Ball : MonoBehaviour
                 _s0 = disks.DiskList[0].transform.position.y+1f;
                 _v = _v0;
                 _t = 0;
+                uiFill.fillAmount -= 0.1f;
                 break;
             case State.Fall:
                 _s0 = transform.position.y;
                 _v = 0;
                 _t = 0;
+                uiFill.fillAmount -= 0.1f;
                 break;
             case State.Smash:
+                uiFill.fillAmount = 0;
+                break;
+            case State.Fury:
                 break;
             case State.Die:
                 break;
@@ -121,11 +147,33 @@ public class Ball : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece"))
+        if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
         {
-            ChangeSate(State.Die);
+            if (_undestroyable == 1)
+            {
+                var scaleSequence = DOTween.Sequence();
+                scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
+                    .Append(gameObject.transform.DOScaleZ(2f, 5f));
+                ChangeSate(State.Fall);
+                _undestroyable--;
+            }
+            else
+            {
+                ChangeSate(State.Die);
+            }
         }
+        else if (_currentState == State.Smash && other.gameObject.CompareTag("Win_Piece"))
+        {
+            disks.ChangeState(GamePlay.GameStates.Win);
+        }
+    }
+
+    private void Fury()
+    {
+        float time = 0;
+        time += Time.deltaTime;
+        uiFill.fillAmount -= 10f*time;
     }
 }  

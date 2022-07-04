@@ -8,6 +8,7 @@ public class Disk: MonoBehaviour
     private Vector3 rotation;
     private float RotateAmount = 1;
     private State currenState = State.rotate;
+    [SerializeField] private GameObject diskWin;
 
     enum State
     {
@@ -16,7 +17,7 @@ public class Disk: MonoBehaviour
  
     void Start(){
        // MeshColor();
-     
+       Win();
     }
     void Update()
     {
@@ -29,6 +30,11 @@ public class Disk: MonoBehaviour
     void RotateOb()
     {
         transform.Rotate(Vector3.up*RotateAmount);
+    }
+    
+    void Win()
+    {
+        diskWin.transform.position = new Vector3(0,-50f,0);
     }
 
     State changeState(State state)

@@ -2,14 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UnityEngine.SceneManagement;
+
 
 public class GamePlay : MonoBehaviour
 {
     public List<GameObject> DiskList = new List<GameObject>();
-    [SerializeField] private GameObject ObDisk;
+    [SerializeField]private GameObject ObDisk;
     private GameObject firstDisk;
     private GameStates _currentGameState = GameStates.Idle;
+    public static bool isGameStarted;
+    public GameObject startingText;
+    private Ball obballs = new Ball();
     public static GamePlay Instance { get; private set; }
 
     private void Awake()
@@ -17,10 +21,10 @@ public class GamePlay : MonoBehaviour
         Instance = this;
     }
 
-    private enum GameStates
+    public enum GameStates
     {
         Idle,
-        Smash,
+        Furry,
         Win,
         Lose
     }
@@ -28,11 +32,16 @@ public class GamePlay : MonoBehaviour
     private void Start()
     {
         CreatDisk();
-        // DiskList[0].SetActive(false);
+        isGameStarted = false;
     }
 
     public void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            isGameStarted = true;
+            Destroy(startingText);
+        }
     }
 
     //Start make Disk
@@ -44,13 +53,7 @@ public class GamePlay : MonoBehaviour
             DiskList.Add(cloneDisk);
         }
     }
-    //Start make Level
-
-    //End make Level
-    
-    //Color Black piece disk
-   
-    private void ChangeState(GameStates newState)
+    public void ChangeState(GameStates newState)
     {
         if (newState == _currentGameState) return;
         ExitCurrentState();
@@ -64,11 +67,14 @@ public class GamePlay : MonoBehaviour
         {
             case GameStates.Idle:
                 break;
-            case GameStates.Smash:
+            case GameStates.Furry:
                 break;
             case GameStates.Win:
+                obballs._currentState = Ball.State.Fall;
                 break;
             case GameStates.Lose:
+                Debug.Log("as");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -81,7 +87,7 @@ public class GamePlay : MonoBehaviour
         {
             case GameStates.Idle:
                 break;
-            case GameStates.Smash:
+            case GameStates.Furry:
                 break;
             case GameStates.Win:
                 break;
