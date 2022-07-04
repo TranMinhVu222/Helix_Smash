@@ -16,9 +16,7 @@ public class Ball : MonoBehaviour
     private float yJump =0;
     private float _s0 = 0;
     private State _currentState = State.Jump;
-    private bool click;
     [SerializeField] private GamePlay disks;
-    [SerializeField] private 
     enum State
     {
         Jump,Fall,Smash,Die
@@ -48,6 +46,7 @@ public class Ball : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     ChangeSate(State.Smash);
+                    return;
                 }
                 break;
             case State.Fall:
@@ -55,7 +54,7 @@ public class Ball : MonoBehaviour
                 yFall = _s0 + 0.5f * -g * _t * _t;
                 transform.position = new Vector3(0, yFall, 2.5f);
                 //LAM CHO QUA BONG BIEN DANG KHI ROI
-                transform.localScale = new Vector3(1f + 0.6f * _t,1f - 0.2f * _t,1f + 0.6f * _t);
+                transform.localScale = new Vector3(1f + 0.6f * _t,1f - 0.2f * _t,1f);
                 //PHAT HIEN THOI DIEM NHAY LEN
                 if (yFall < disks.DiskList[0].transform.position.y + 1f)
                 {
@@ -66,6 +65,7 @@ public class Ball : MonoBehaviour
                 if (Input.GetMouseButton(0))
                 {
                     ChangeSate(State.Smash);
+                    return;
                 }
                 break;
             case State.Smash:
@@ -73,21 +73,23 @@ public class Ball : MonoBehaviour
                 {
                     int count = 0;
                     transform.position -= new Vector3(0, 0.5f, 0)*0.5f;
-                    if (transform.position.y < disks.DiskList[0].transform.position.y)
+                    if (transform.position.y < disks.DiskList[0].transform.position.y+0.5f)
                     {
                         Destroy(disks.DiskList[0]);
                         disks.DiskList.Remove(disks.DiskList[0]);
                         count++;
                     }
-                    _smax -= count * 1.5f;
+                    _smax -= count * 1f;
                 } 
                 if (Input.GetMouseButtonUp(0))
                 {
                     ChangeSate(State.Fall);
+                    return;
                 }
-                Debug.Log("_smax= " + _smax);
                 break;
             case State.Die:
+                gameObject.SetActive(false);
+                Debug.Log("Die");
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -96,6 +98,7 @@ public class Ball : MonoBehaviour
     }
     private void ChangeSate(State state)
     {
+        // Debug.Log(_currentState);
         if (state == _currentState) return;
         _currentState = state;
         switch (state)
@@ -116,6 +119,13 @@ public class Ball : MonoBehaviour
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece"))
+        {
+            ChangeSate(State.Die);
         }
     }
 }  
