@@ -90,7 +90,7 @@ public class Ball : MonoBehaviour
                         disks.DiskList.Remove(disks.DiskList[0]);
                         count++;
                         countDestroy++;
-                        uiFill.fillAmount += 3f*time;
+                        uiFill.fillAmount += 3.5f*time;
                     }
                     Debug.Log(countDestroy);
                     _smax -= count * 1f;
@@ -103,10 +103,30 @@ public class Ball : MonoBehaviour
 
                 if (uiFill.fillAmount==1)
                 {
-                    checkFurry = true;
+                    ChangeSate(State.Fury);
                 }
                 break;
             case State.Fury:
+                
+                float timeFury = 0;
+                timeFury += Time.deltaTime;
+                if (Input.GetMouseButtonUp(0))
+                {
+                    checkFurry = true;
+                    Destroy(disks.DiskList[0]);
+                    disks.DiskList.Remove(disks.DiskList[0]);
+                    uiFill.fillAmount -= 3.5f*timeFury;
+                }
+
+                if (uiFill.fillAmount == 0)
+                {
+                    checkFurry = false;
+                }
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    ChangeSate(State.Fall);
+                }
                 break;
             case State.Die:
                 gameObject.SetActive(false);
@@ -128,13 +148,13 @@ public class Ball : MonoBehaviour
                 _s0 = disks.DiskList[0].transform.position.y+1f;
                 _v = _v0;
                 _t = 0;
-                uiFill.fillAmount -= 0.1f;
+                uiFill.fillAmount -= 0.05f;
                 break;
             case State.Fall:
                 _s0 = transform.position.y;
                 _v = 0;
                 _t = 0;
-                uiFill.fillAmount -= 0.1f;
+                uiFill.fillAmount -= 0.05f;
                 break;
             case State.Smash:
                 uiFill.fillAmount = 0;
@@ -153,11 +173,13 @@ public class Ball : MonoBehaviour
         {
             if (_undestroyable == 1)
             {
+                Debug.Log("thanh cong");
                 var scaleSequence = DOTween.Sequence();
                 scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
                     .Append(gameObject.transform.DOScaleZ(2f, 5f));
                 ChangeSate(State.Fall);
                 _undestroyable--;
+                Invoke("scaledike",0.5f);
             }
             else
             {
@@ -168,6 +190,11 @@ public class Ball : MonoBehaviour
         {
             disks.ChangeState(GamePlay.GameStates.Win);
         }
+    }
+
+    private void scaledike()
+    {
+        
     }
 
     private void Fury()
