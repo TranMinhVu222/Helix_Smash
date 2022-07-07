@@ -47,9 +47,9 @@ public class GamePlay : MonoBehaviour
     //Start make Disk
     public void CreatDisk()
     {
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 100; i++)
         {
-            GameObject cloneDisk = Instantiate(ObDisk, new Vector3(0, i * -1f, 0), Quaternion.Euler(new Vector3(0, i * 10, 0)));
+            GameObject cloneDisk = Instantiate(ObDisk, new Vector3(0, i * -1f, 0), Quaternion.Euler(new Vector3(0, i * 5, 0)));
             DiskList.Add(cloneDisk);
         }
     }

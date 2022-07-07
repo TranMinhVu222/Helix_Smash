@@ -23,7 +23,8 @@ public class Ball : MonoBehaviour
     public State _currentState = State.Jump;
     private int _undestroyable = 1;
     [SerializeField] private GamePlay disks;
-    [SerializeField] private Image uiFill;
+    [SerializeField] private Image whiteCircle;
+    [SerializeField] private Image redCircle;
     public enum State
     {
         Jump,Fall,Smash,Fury,Die
@@ -31,6 +32,7 @@ public class Ball : MonoBehaviour
 
     void Start()
     {
+        redCircle.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -80,8 +82,7 @@ public class Ball : MonoBehaviour
             case State.Smash:
                 if (Input.GetMouseButton(0))
                 {
-                    float time = 0;
-                    time += Time.deltaTime;
+                    float countdownFurry = 0.05f;
                     int count = 0;
                     transform.position -= new Vector3(0, 0.5f, 0)*0.5f;
                     if (transform.position.y < disks.DiskList[0].transform.position.y+0.5f)
@@ -90,42 +91,31 @@ public class Ball : MonoBehaviour
                         disks.DiskList.Remove(disks.DiskList[0]);
                         count++;
                         countDestroy++;
-                        uiFill.fillAmount += 3.5f*time;
+                        checkFurry = false;
+                        checkDestroy++;
                     }
-                    Debug.Log(countDestroy);
+                    if (checkDestroy < 10)
+                    {
+                        whiteCircle.fillAmount += countdownFurry;
+                    }
+
+                    if (checkDestroy >= 10)
+                    {
+                        checkFurry = true;
+                    }
+                    
+                    if (whiteCircle.fillAmount == 0)
+                    {
+                        checkFurry = false;
+                        checkDestroy = 0;
+                    }
                     _smax -= count * 1f;
                 }
+               
                 if (Input.GetMouseButtonUp(0))
                 {
                     ChangeSate(State.Fall);
                     return;
-                }
-
-                if (uiFill.fillAmount==1)
-                {
-                    ChangeSate(State.Fury);
-                }
-                break;
-            case State.Fury:
-                
-                float timeFury = 0;
-                timeFury += Time.deltaTime;
-                if (Input.GetMouseButtonUp(0))
-                {
-                    checkFurry = true;
-                    Destroy(disks.DiskList[0]);
-                    disks.DiskList.Remove(disks.DiskList[0]);
-                    uiFill.fillAmount -= 3.5f*timeFury;
-                }
-
-                if (uiFill.fillAmount == 0)
-                {
-                    checkFurry = false;
-                }
-
-                if (Input.GetMouseButtonUp(0))
-                {
-                    ChangeSate(State.Fall);
                 }
                 break;
             case State.Die:
@@ -136,28 +126,33 @@ public class Ball : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
         _t += Time.deltaTime;
+        whiteCircle.fillAmount -= 6f * Time.deltaTime * Time.deltaTime;
+        // redCircle.fillAmount -= 20f * Time.deltaTime * Time.deltaTime;
     }
+    
     private void ChangeSate(State state)
     {
-        // Debug.Log(_currentState);
         if (state == _currentState) return;
         _currentState = state;
+        float timeFury = 0;
+        timeFury += Time.deltaTime;
         switch (state)
         {
             case State.Jump:
                 _s0 = disks.DiskList[0].transform.position.y+1f;
                 _v = _v0;
                 _t = 0;
-                uiFill.fillAmount -= 0.05f;
+               // whiteCircle.fillAmount -= 1.75f * timeFury;
+                //redCircle.fillAmount -= 1.75f * timeFury;
                 break;
             case State.Fall:
                 _s0 = transform.position.y;
                 _v = 0;
                 _t = 0;
-                uiFill.fillAmount -= 0.05f;
+                //whiteCircle.fillAmount -= 1.75f * timeFury;
+                //redCircle.fillAmount -= 1.75f * timeFury;
                 break;
             case State.Smash:
-                uiFill.fillAmount = 0;
                 break;
             case State.Fury:
                 break;
@@ -173,13 +168,11 @@ public class Ball : MonoBehaviour
         {
             if (_undestroyable == 1)
             {
-                Debug.Log("thanh cong");
                 var scaleSequence = DOTween.Sequence();
                 scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
                     .Append(gameObject.transform.DOScaleZ(2f, 5f));
                 ChangeSate(State.Fall);
                 _undestroyable--;
-                Invoke("scaledike",0.5f);
             }
             else
             {
@@ -191,16 +184,4 @@ public class Ball : MonoBehaviour
             disks.ChangeState(GamePlay.GameStates.Win);
         }
     }
-
-    private void scaledike()
-    {
-        
-    }
-
-    private void Fury()
-    {
-        float time = 0;
-        time += Time.deltaTime;
-        uiFill.fillAmount -= 10f*time;
-    }
-}  
+} 
