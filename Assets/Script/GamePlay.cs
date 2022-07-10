@@ -1,19 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 
 public class GamePlay : MonoBehaviour
 {
     public List<GameObject> DiskList = new List<GameObject>();
-    [SerializeField]private GameObject ObDisk;
     private GameObject firstDisk;
     private GameStates _currentGameState = GameStates.Idle;
     public static bool isGameStarted;
     public GameObject startingText;
     private Ball obballs = new Ball();
+    [SerializeField] private GameObject[] NextDisk;
+    private int NumberArray = 3;
+    private GameObject ArrayDisk;
     public static GamePlay Instance { get; private set; }
 
     private void Awake()
@@ -49,7 +54,7 @@ public class GamePlay : MonoBehaviour
     {
         for (int i = 0; i < 100; i++)
         {
-            GameObject cloneDisk = Instantiate(ObDisk, new Vector3(0, i * -1f, 0), Quaternion.Euler(new Vector3(0, i * 5, 0)));
+            GameObject cloneDisk = Instantiate(NextDisk[NumberArray], new Vector3(0, i * -1f, 0), Quaternion.Euler(new Vector3(0, i * 5, 0)));
             DiskList.Add(cloneDisk);
         }
     }
@@ -71,9 +76,9 @@ public class GamePlay : MonoBehaviour
                 break;
             case GameStates.Win:
                 obballs._currentState = Ball.State.Fall;
+                NumberArray = UnityEngine.Random.Range(1,4);
                 break;
             case GameStates.Lose:
-                Debug.Log("as");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 break;
             default:

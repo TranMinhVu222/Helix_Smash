@@ -24,7 +24,6 @@ public class Ball : MonoBehaviour
     private int _undestroyable = 1;
     [SerializeField] private GamePlay disks;
     [SerializeField] private Image whiteCircle;
-    [SerializeField] private Image redCircle;
     public enum State
     {
         Jump,Fall,Smash,Fury,Die
@@ -32,7 +31,6 @@ public class Ball : MonoBehaviour
 
     void Start()
     {
-        redCircle.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -82,7 +80,7 @@ public class Ball : MonoBehaviour
             case State.Smash:
                 if (Input.GetMouseButton(0))
                 {
-                    float countdownFurry = 0.05f;
+                    float countdownFurry = 1.5f * Time.deltaTime;
                     int count = 0;
                     transform.position -= new Vector3(0, 0.5f, 0)*0.5f;
                     if (transform.position.y < disks.DiskList[0].transform.position.y+0.5f)
@@ -94,12 +92,12 @@ public class Ball : MonoBehaviour
                         checkFurry = false;
                         checkDestroy++;
                     }
-                    if (checkDestroy < 10)
+                    if (checkDestroy < 15)
                     {
                         whiteCircle.fillAmount += countdownFurry;
                     }
 
-                    if (checkDestroy >= 10)
+                    if (checkDestroy >= 15)
                     {
                         checkFurry = true;
                     }
@@ -126,7 +124,7 @@ public class Ball : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
         _t += Time.deltaTime;
-        whiteCircle.fillAmount -= 6f * Time.deltaTime * Time.deltaTime;
+        whiteCircle.fillAmount -= 0.5f * Time.deltaTime;
         // redCircle.fillAmount -= 20f * Time.deltaTime * Time.deltaTime;
     }
     
@@ -179,7 +177,7 @@ public class Ball : MonoBehaviour
                 ChangeSate(State.Die);
             }
         }
-        else if (_currentState == State.Smash && other.gameObject.CompareTag("Win_Piece"))
+        else if (other.gameObject.CompareTag("Win_Piece"))
         {
             disks.ChangeState(GamePlay.GameStates.Win);
         }
