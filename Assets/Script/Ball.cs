@@ -125,7 +125,6 @@ public class Ball : MonoBehaviour
         }
         _t += Time.deltaTime;
         whiteCircle.fillAmount -= 0.5f * Time.deltaTime;
-        // redCircle.fillAmount -= 20f * Time.deltaTime * Time.deltaTime;
     }
     
     private void ChangeSate(State state)
@@ -140,15 +139,11 @@ public class Ball : MonoBehaviour
                 _s0 = disks.DiskList[0].transform.position.y+1f;
                 _v = _v0;
                 _t = 0;
-               // whiteCircle.fillAmount -= 1.75f * timeFury;
-                //redCircle.fillAmount -= 1.75f * timeFury;
                 break;
             case State.Fall:
                 _s0 = transform.position.y;
                 _v = 0;
                 _t = 0;
-                //whiteCircle.fillAmount -= 1.75f * timeFury;
-                //redCircle.fillAmount -= 1.75f * timeFury;
                 break;
             case State.Smash:
                 break;

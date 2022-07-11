@@ -6,7 +6,7 @@ public class Disk: MonoBehaviour
 {
     private float time;
     private Vector3 rotation;
-    private float RotateAmount = 1;
+    private float RotateAmount = 2;
     private State currenState = State.rotate;
     [SerializeField] private GameObject diskWin;
 
