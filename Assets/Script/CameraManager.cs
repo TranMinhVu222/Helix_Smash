@@ -15,11 +15,6 @@ public class CameraManager : MonoBehaviour
         if (followDisk.DiskList.Count > 0)
         {
             transform.position = followDisk.DiskList[0].transform.position + positionCam;
-            return;
-        }
-        else
-        {
-            //stransform.position = winDisk.transform.position + positionCam;
         }
     }
 }

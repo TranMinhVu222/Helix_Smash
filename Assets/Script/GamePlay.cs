@@ -22,7 +22,7 @@ public class GamePlay : MonoBehaviour
     [SerializeField] private GameObject[] NextDisk;
     private GameObject ArrayDisk;
     private GameObject obstacle1;
-    private int GainLevel = 50;
+    public int GainLevel = 50;
     public static GamePlay Instance { get; private set; }
 
     private void Awake()
@@ -57,19 +57,12 @@ public class GamePlay : MonoBehaviour
             isGameStarted = true;
             Destroy(startingText);
         }
-        if (Input.GetMouseButtonDown(0) && DiskList.Count == 2)
-        {
-            Debug.Log("wining");
-            NextLevelText.SetActive(false);
-            ChangeState(GameStates.Next);
-        }
-
         switch (_currentGameState)
         {
             case GameStates.Lose:
+                LoseText.SetActive(true);
                 if (Input.GetMouseButton(0))
                 {
-                    Debug.Log("losing");
                     LoseText.SetActive(false);
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 }
@@ -77,11 +70,16 @@ public class GamePlay : MonoBehaviour
             case GameStates.Win:
                 if (Input.GetMouseButtonDown(0) && DiskList.Count == 2)
                 {
-                    Debug.Log("wining");
                     NextLevelText.SetActive(false);
                     ChangeState(GameStates.Next);
-                }
+                    if (GainLevel <= 300)
+                    {
+                        GainLevel += 10;
+                    } 
+                } 
                 break;
+            default:
+                return;
         }
     }
 
@@ -109,18 +107,16 @@ public class GamePlay : MonoBehaviour
 
         for (int i = (int)(DiskList.Count / 7); i < (int)(DiskList.Count * 2 / 7); i += 2)
         {
-            for (int j = 0; j < countPiece - 2; j++)
+            for (int j = 0; j < countPiece - countPiece/2; j++)
             {
                 obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject;
                 obstacle1.tag = "Black_Piece";
                 obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
-                Debug.Log("j = " + j);
             }
-            Debug.Log("i = " + i);
         }
         for (int i = (int)(DiskList.Count * 2 / 7) ; i < DiskList.Count * 3 / 7; i++)
         {
-            for (int j = 3; j < countPiece ; j++)
+            for (int j = 2; j < countPiece - 1  ; j++)
              {
                  obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject; 
                  obstacle1.tag = "Black_Piece";
@@ -146,6 +142,7 @@ public class GamePlay : MonoBehaviour
 
     private void EnterNewState()
     {
+        Debug.Log(_currentGameState);
         switch (_currentGameState)
         {
             case GameStates.Idle:
@@ -155,6 +152,7 @@ public class GamePlay : MonoBehaviour
                 break;
             case GameStates.Win:
                 NextLevelText.SetActive(true);
+                GainLevel += 10;
                 break;
             case GameStates.Lose:
                 LoseText.SetActive(true);

@@ -36,7 +36,9 @@ public class Disk: MonoBehaviour
     
     void Win()
     {
-        diskWin.transform.position = new Vector3(0,-48,0);
+        // int WinDiskPosition = gamePlay.DiskList.Count - 2;
+        // diskWin.transform.position = new Vector3(0,-WinDiskPosition - 0.25f,0);
+        diskWin.transform.position = new Vector3(0,-48.25f,0);
     }
 
     State changeState(State state)
