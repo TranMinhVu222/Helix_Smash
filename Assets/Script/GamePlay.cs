@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = System.Random;
@@ -15,14 +16,13 @@ public class GamePlay : MonoBehaviour
     private GameStates _currentGameState = GameStates.Idle;
     public static bool isGameStarted;
     public GameObject startingText;
+    public GameObject NextLevelText;
+    public GameObject LoseText;
     private Ball obballs = new Ball();
     [SerializeField] private GameObject[] NextDisk;
-    private int NumberArray = 0;
     private GameObject ArrayDisk;
     private GameObject obstacle1;
-    private int RandomPiece1;
-    private int RandomPiece2;
-    private int RandomPiece3;
+    private int GainLevel = 50;
     public static GamePlay Instance { get; private set; }
 
     private void Awake()
@@ -33,7 +33,7 @@ public class GamePlay : MonoBehaviour
     public enum GameStates
     {
         Idle,
-        Furry,
+        Next,
         Win,
         Lose
     }
@@ -46,6 +46,8 @@ public class GamePlay : MonoBehaviour
         {
             NextDisk[i].SetActive(false);
         }
+        NextLevelText.SetActive(false);
+        LoseText.SetActive(false);
     }
 
     public void Update()
@@ -55,16 +57,43 @@ public class GamePlay : MonoBehaviour
             isGameStarted = true;
             Destroy(startingText);
         }
+        if (Input.GetMouseButtonDown(0) && DiskList.Count == 2)
+        {
+            Debug.Log("wining");
+            NextLevelText.SetActive(false);
+            ChangeState(GameStates.Next);
+        }
+
+        switch (_currentGameState)
+        {
+            case GameStates.Lose:
+                if (Input.GetMouseButton(0))
+                {
+                    Debug.Log("losing");
+                    LoseText.SetActive(false);
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                }
+                break;
+            case GameStates.Win:
+                if (Input.GetMouseButtonDown(0) && DiskList.Count == 2)
+                {
+                    Debug.Log("wining");
+                    NextLevelText.SetActive(false);
+                    ChangeState(GameStates.Next);
+                }
+                break;
+        }
     }
 
     //Start make Disk
     public void CreatDisk()
     {
-        int countPiece = NextDisk[2].transform.childCount;
+        int RandomDisk = UnityEngine.Random.Range(0, 3);
+        int countPiece = NextDisk[RandomDisk].transform.childCount;
         //Start born Disk
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < GainLevel; i++)
         {
-            GameObject cloneDisk = Instantiate(NextDisk[2], new Vector3(0, i * -1f, 0), Quaternion
+            GameObject cloneDisk = Instantiate(NextDisk[RandomDisk], new Vector3(0, i * -1f, 0), Quaternion
                 .Euler(new Vector3(0, i * 5, 0)));
             DiskList.Add(cloneDisk);
         }
@@ -80,7 +109,7 @@ public class GamePlay : MonoBehaviour
 
         for (int i = (int)(DiskList.Count / 7); i < (int)(DiskList.Count * 2 / 7); i += 2)
         {
-            for (int j = 0; j < countPiece; j+=2)
+            for (int j = 0; j < countPiece - 2; j++)
             {
                 obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject;
                 obstacle1.tag = "Black_Piece";
@@ -99,7 +128,7 @@ public class GamePlay : MonoBehaviour
              }
         }
         
-        for (int i = (int)(DiskList.Count * 3 / 7); i < DiskList.Count; i++)
+        for (int i = (int)(DiskList.Count * 3 / 7); i < DiskList.Count - 2; i++)
         {
             int RandomPiece = UnityEngine.Random.Range(0, countPiece - 1);
             obstacle1 = DiskList[i].transform.GetChild(RandomPiece).GetChild(0).gameObject; 
@@ -121,14 +150,14 @@ public class GamePlay : MonoBehaviour
         {
             case GameStates.Idle:
                 break;
-            case GameStates.Furry:
+            case GameStates.Next:
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 break;
             case GameStates.Win:
-                obballs._currentState = Ball.State.Fall;
-                NumberArray = UnityEngine.Random.Range(0,3);
+                NextLevelText.SetActive(true);
                 break;
             case GameStates.Lose:
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                LoseText.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -141,7 +170,7 @@ public class GamePlay : MonoBehaviour
         {
             case GameStates.Idle:
                 break;
-            case GameStates.Furry:
+            case GameStates.Next:
                 break;
             case GameStates.Win:
                 break;

@@ -6,8 +6,10 @@ public class Disk: MonoBehaviour
 {
     private float time;
     private Vector3 rotation;
-    private float RotateAmount = 2;
+    private float RotateAmount = 1;
     private State currenState = State.rotate;
+    private float WinDiskPosition;
+    [SerializeField] private GamePlay gamePlay;
     [SerializeField] private GameObject diskWin;
 
     enum State
@@ -34,7 +36,7 @@ public class Disk: MonoBehaviour
     
     void Win()
     {
-        diskWin.transform.position = new Vector3(0,-100f,0);
+        diskWin.transform.position = new Vector3(0,-48,0);
     }
 
     State changeState(State state)
