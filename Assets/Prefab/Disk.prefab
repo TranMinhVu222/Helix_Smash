@@ -63,7 +63,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9747630c093685447903c51024bd197d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gamePlay: {fileID: 0}
   diskWin: {fileID: 0}
+  colorPiece: {fileID: 0}
 --- !u!1001 &713070378733963577
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -128,9 +130,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 341df33338533294898c03bc597cb879, type: 2}
+      objectReference: {fileID: 2100000, guid: ef1f40ca176f6c24cac9c305b6751a5a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
 --- !u!1 &713070378733997977 stripped
@@ -254,7 +260,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 341df33338533294898c03bc597cb879, type: 2}
+      objectReference: {fileID: 2100000, guid: ef1f40ca176f6c24cac9c305b6751a5a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
 --- !u!1 &3076481919460400035 stripped
@@ -390,7 +396,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 341df33338533294898c03bc597cb879, type: 2}
+      objectReference: {fileID: 2100000, guid: ef1f40ca176f6c24cac9c305b6751a5a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6144c2b0d677b7b42b984ac1c784daeb, type: 3}
 --- !u!1 &3128792413950940453 stripped
@@ -438,6 +444,22 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!54 &3980608379200981930
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3128792413950940455}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!64 &8524846834793533367
 MeshCollider:
   m_ObjectHideFlags: 0

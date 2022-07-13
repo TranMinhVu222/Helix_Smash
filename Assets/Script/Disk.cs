@@ -11,6 +11,7 @@ public class Disk: MonoBehaviour
     private float WinDiskPosition;
     [SerializeField] private GamePlay gamePlay;
     [SerializeField] private GameObject diskWin;
+    [SerializeField] private Material colorPiece;
 
     enum State
     {
@@ -18,7 +19,10 @@ public class Disk: MonoBehaviour
     }
  
     void Start(){
-       // MeshColor();
+       //  if (!gameObject.GetComponentInChildren<MeshRenderer>().CompareTag("Black_Piece"))
+       // {
+       //     colorPiece.color = Random.ColorHSV(0.5f, 1f, 1f, 1f, 0.5f, 1f);    
+       // }
        Win();
     }
     void Update()

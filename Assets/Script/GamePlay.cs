@@ -20,6 +20,7 @@ public class GamePlay : MonoBehaviour
     public GameObject LoseText;
     private Ball obballs = new Ball();
     [SerializeField] private GameObject[] NextDisk;
+    [SerializeField] private Material colorPiece;
     private GameObject ArrayDisk;
     private GameObject obstacle1;
     public int GainLevel = 50;
@@ -91,7 +92,7 @@ public class GamePlay : MonoBehaviour
         //Start born Disk
         for (int i = 0; i < GainLevel; i++)
         {
-            GameObject cloneDisk = Instantiate(NextDisk[RandomDisk], new Vector3(0, i * -1f, 0), Quaternion
+            GameObject cloneDisk = Instantiate(NextDisk[0], new Vector3(0, i * -1f, 0), Quaternion
                 .Euler(new Vector3(0, i * 5, 0)));
             DiskList.Add(cloneDisk);
         }
@@ -117,11 +118,11 @@ public class GamePlay : MonoBehaviour
         for (int i = (int)(DiskList.Count * 2 / 7) ; i < DiskList.Count * 3 / 7; i++)
         {
             for (int j = 2; j < countPiece - 1  ; j++)
-             {
-                 obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject; 
-                 obstacle1.tag = "Black_Piece";
-                 obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
-             }
+            {
+                obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject; 
+                obstacle1.tag = "Black_Piece";
+                obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+            }
         }
         
         for (int i = (int)(DiskList.Count * 3 / 7); i < DiskList.Count - 2; i++)
@@ -131,6 +132,7 @@ public class GamePlay : MonoBehaviour
             obstacle1.tag = "Black_Piece";
             obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
         }
+        //End hard Level
     }
     public void ChangeState(GameStates newState)
     {
