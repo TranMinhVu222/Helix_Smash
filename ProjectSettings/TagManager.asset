@@ -3,9 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Black_Piece
-  - Win_Piece
+  tags: []
   layers:
   - Default
   - TransparentFX
