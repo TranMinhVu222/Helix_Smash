@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.SocialPlatforms;
+using Random = System.Random;
 
 public class Ball : MonoBehaviour
 {
@@ -174,31 +175,34 @@ public class Ball : MonoBehaviour
         {
             parent.Add(disks.DiskList[0].transform.GetChild(i));
         }
-        // List<Transform> childList = new List<Transform>();
+        List<Transform> childList = new List<Transform>();
         foreach (Transform child in parent)
         {
-            Transform childDisk = Instantiate(child,child.transform.position, child.transform.rotation);
-            // childList.Add(childDisk);
-            Rigidbody rb = childDisk.GetComponent<Rigidbody>();
-            rb.AddForce(3f,5f,1f,ForceMode.Impulse);
+            Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
+            childList.Add(childDisk);
+            Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
             rb.isKinematic = false;
+            rb.AddForce(0,2f,- 10f,ForceMode.Impulse);
+            Debug.Log(child.position);
         }
-        //
-        // for (int i = 0; i < childList.Count; i++)
-        // {
-        //     Debug.Log("ten loai con sinh ra " +childList[i].name);
-        // }
-    }
 
+        for (int i = 0; i < 4; i++)
+        {
+            int temp = UnityEngine.Random.Range(0, childList.Count - 1);
+            childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(temp,5f,- 10f - temp,ForceMode.Impulse);
+            childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(temp - temp,1f+temp,- 10f - temp,ForceMode.Impulse);
+        }
+        // childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(temp,5f,- 10f,ForceMode.Impulse);
+    }
     private void OnTriggerStay(Collider other)
     {
         if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
         {
             if (_undestroyable == 1)
             {
-                var scaleSequence = DOTween.Sequence();
-                scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
-                    .Append(gameObject.transform.DOScaleZ(2f, 5f));
+                // var scaleSequence = DOTween.Sequence();
+                // scaleSequence.Append(disks.DiskList[0].transform.DOScaleZ(0.015f, 0.1f))
+                //      .Append(disks.DiskList[0].transform.DOScaleZ(0.01f, 0.1f));
                 ChangeSate(State.Fall);
                 _undestroyable--;
             }
