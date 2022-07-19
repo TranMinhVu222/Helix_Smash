@@ -67,10 +67,13 @@ public class Ball : MonoBehaviour
                 yFall = _s0 + 0.5f * -g * _t * _t;
                 transform.position = new Vector3(0, yFall, 2.5f);
                 //LAM CHO QUA BONG BIEN DANG KHI ROI
-                transform.localScale = new Vector3(1f + 0.6f * _t,1f - 0.2f * _t,1f);
+                // transform.localScale = new Vector3(1f + 0.6f * _t,1f - 0.2f * _t,1f);
+                transform.localScale = new Vector3(1f - 0.7f * _t, 1f + 0.1f * _t,1f - 0.7f * _v0);
                 //PHAT HIEN THOI DIEM NHAY LEN
                 if (yFall < disks.DiskList[0].transform.position.y + 1f)
                 {
+                    Debug.Log("acb");
+                    transform.localScale = new Vector3(1f +  0.6f*_t,1f - 0.2f * _t,1f);
                     ChangeSate(State.Jump);
                     return;
                 }
@@ -122,6 +125,7 @@ public class Ball : MonoBehaviour
                 }
                 break;
             case State.Die:
+                disks.ChangeState(Gameplay.GameStates.Lose);
                 break;
             default:
                 return;
@@ -159,8 +163,7 @@ public class Ball : MonoBehaviour
             case State.Smash:
                 break;
             case State.Die:
-                // gameObject.SetActive(false);
-                disks.ChangeState(Gameplay.State.Lose);
+                disks.ChangeState(Gameplay.GameStates.Lose);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
@@ -182,7 +185,6 @@ public class Ball : MonoBehaviour
                 Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
                 rb.isKinematic = false;
                 rb.AddForce(0,2f,- 10f,ForceMode.Impulse);
-                Debug.Log(child.position);
             }
     
             for (int i = 0; i < 4; i++)
@@ -199,9 +201,9 @@ public class Ball : MonoBehaviour
         {
             if (_undestroyable == 1)
             {
-                var scaleSequence = DOTween.Sequence();
-                scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
-                    .Append(gameObject.transform.DOScaleZ(2f, 5f));
+                // var scaleSequence = DOTween.Sequence();
+                // scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
+                //     .Append(gameObject.transform.DOScaleZ(2f, 5f));
                 ChangeSate(State.Fall);
                 _undestroyable--;
             }
@@ -212,7 +214,7 @@ public class Ball : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Win_Piece")&& disks.DiskList.Count == 2f)
         {
-            disks.ChangeState(Gameplay.State.Win);
+            disks.ChangeState(Gameplay.GameStates.Win);
         }
     }
 } 

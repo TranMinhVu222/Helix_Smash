@@ -12,6 +12,9 @@ namespace Funzilla
 {
 	internal enum RewardedVideoState
 	{
+#if !UNITY_EDITOR
+		Closed, NotReady,
+#endif
 		Failed, Watched
 	}
 
@@ -181,7 +184,7 @@ namespace Funzilla
 				if (Time.realtimeSinceStartup - _lastRewardedVideoShowTime < Config.InterstitialRewardedVideoCappingTime)
 				{
 #if DEBUG_ENABLED
-					var t = Time.realtimeSinceStartup - lastRewardedVideoShowTime;
+					var t = Time.realtimeSinceStartup - _lastRewardedVideoShowTime;
 					Debug.LogError("Rewarded video opened " + t + " seconds ago. Need to wait " +
 						(Config.InterstitialRewardedVideoCappingTime - t) + " seconds to show interstitial");
 #endif
@@ -192,7 +195,7 @@ namespace Funzilla
 					if (Time.realtimeSinceStartup - _lastInterstitialShowTime < Config.FirstInterstitialCappingTime)
 					{
 #if DEBUG_ENABLED
-							var t = Time.realtimeSinceStartup - lastRewardedVideoShowTime;
+							var t = Time.realtimeSinceStartup - _lastInterstitialShowTime;
 							Debug.LogError("Need wait " +
 								(Config.FirstInterstitialCappingTime - t) + " seconds to show interstitial");
 #endif
@@ -204,7 +207,7 @@ namespace Funzilla
 					if (Time.realtimeSinceStartup - _lastInterstitialShowTime < Config.InterstitialCappingTime)
 					{
 #if DEBUG_ENABLED
-							var t = Time.realtimeSinceStartup - lastRewardedVideoShowTime;
+							var t = Time.realtimeSinceStartup - _lastInterstitialShowTime;
 							Debug.LogError("Interstitial opened " + t + " seconds ago. Need to wait " +
 								(Config.InterstitialRewardedVideoCappingTime - t) + " seconds to show interstitial");
 #endif

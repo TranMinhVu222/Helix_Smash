@@ -30,7 +30,7 @@ namespace Funzilla
 			Initialized
 		}
 
-		private State _state = State.Initializing;
+		private State _state = State.None;
 		internal static bool Initialized => Instance._state == State.Initialized;
 
 		internal static void Init()

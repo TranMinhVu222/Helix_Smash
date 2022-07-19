@@ -42,14 +42,18 @@ namespace Funzilla
 				case State.None:
 					Instance._state = State.InitializingFirebase;
 					Application.targetFrameRate = 60;
+					GameAnalytics.Initialize();
+					FB.Init();
+#if UNITY_EDITOR
+					FirebaseOk = true;
+#else
 					FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
 					{
 						if (task.Result != DependencyStatus.Available) return;
 						FirebaseAnalytics.SetAnalyticsCollectionEnabled(true);
 						FirebaseOk = true;
 					});
-					GameAnalytics.Initialize();
-					FB.Init();
+#endif
 					if (onComplete != null) Instance._queue.Enqueue(onComplete);
 					break;
 				case State.InitializingFirebase:
