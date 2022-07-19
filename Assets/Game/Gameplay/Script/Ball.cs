@@ -6,8 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.SocialPlatforms;
-using Random = System.Random;
-
+using  Funzilla;
 public class Ball : MonoBehaviour
 {
     private const float g = 39.8f;
@@ -26,7 +25,7 @@ public class Ball : MonoBehaviour
     private int _undestroyable = 1;
     private float speedDestroy;
     private GameObject destroyDisk;
-    [SerializeField] private GamePlay disks;
+    [SerializeField] private Gameplay disks;
     [SerializeField] private Image whiteCircle;
     [SerializeField] private GameObject FireFury;
     public enum State
@@ -161,48 +160,48 @@ public class Ball : MonoBehaviour
                 break;
             case State.Die:
                 // gameObject.SetActive(false);
-                disks.ChangeState(GamePlay.GameStates.Lose);
+                disks.ChangeState(Gameplay.State.Lose);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
         }
     }
 
-    private void theDestroy()
-    {
-        List<Transform> parent = new List<Transform>();
-        for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
+       private void theDestroy()
         {
-            parent.Add(disks.DiskList[0].transform.GetChild(i));
-        }
-        List<Transform> childList = new List<Transform>();
-        foreach (Transform child in parent)
-        {
-            Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
-            childList.Add(childDisk);
-            Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
-            rb.isKinematic = false;
-            rb.AddForce(0,2f,- 10f,ForceMode.Impulse);
-            Debug.Log(child.position);
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            int temp = UnityEngine.Random.Range(0, childList.Count - 1);
-            childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(temp,5f,- 10f - temp,ForceMode.Impulse);
-            childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(temp - temp,1f+temp,- 10f - temp,ForceMode.Impulse);
-        }
-        // childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(temp,5f,- 10f,ForceMode.Impulse);
+            List<Transform> parent = new List<Transform>();
+            for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
+            {
+                parent.Add(disks.DiskList[0].transform.GetChild(i));
+            }
+            List<Transform> childList = new List<Transform>();
+            foreach (Transform child in parent)
+            {
+                Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
+                childList.Add(childDisk);
+                Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
+                rb.isKinematic = false;
+                rb.AddForce(0,2f,- 10f,ForceMode.Impulse);
+                Debug.Log(child.position);
+            }
+    
+            for (int i = 0; i < 4; i++)
+            {
+                int temp = UnityEngine.Random.Range(0, childList.Count - 1);
+                childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(temp,5f,- 10f - temp,ForceMode.Impulse);
+                childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(temp - temp,1f+temp,- 10f - temp,ForceMode.Impulse);
+            }
     }
+
     private void OnTriggerStay(Collider other)
     {
         if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
         {
             if (_undestroyable == 1)
             {
-                // var scaleSequence = DOTween.Sequence();
-                // scaleSequence.Append(disks.DiskList[0].transform.DOScaleZ(0.015f, 0.1f))
-                //      .Append(disks.DiskList[0].transform.DOScaleZ(0.01f, 0.1f));
+                var scaleSequence = DOTween.Sequence();
+                scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
+                    .Append(gameObject.transform.DOScaleZ(2f, 5f));
                 ChangeSate(State.Fall);
                 _undestroyable--;
             }
@@ -213,7 +212,7 @@ public class Ball : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Win_Piece")&& disks.DiskList.Count == 2f)
         {
-            disks.ChangeState(GamePlay.GameStates.Win);
+            disks.ChangeState(Gameplay.State.Win);
         }
     }
 } 

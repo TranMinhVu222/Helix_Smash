@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using  Funzilla;
 
 public class CameraManager : MonoBehaviour
 
 {
     // Start is called before the first frame update
-    [SerializeField] private GamePlay followDisk;
+    [SerializeField] private Gameplay followDisk;
     [SerializeField] private Vector3 positionCam;
     [SerializeField] private GameObject winDisk;
     private void LateUpdate()

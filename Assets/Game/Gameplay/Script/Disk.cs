@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Funzilla;
 
 public class Disk: MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class Disk: MonoBehaviour
     private State currenState = State.rotate;
     private float vitri;
     [SerializeField] private GameObject diskWin;
-    [SerializeField] private GamePlay gamePlay;
+    [SerializeField] private Gameplay gamePlay;
     
 
     enum State
