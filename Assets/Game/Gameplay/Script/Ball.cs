@@ -125,7 +125,6 @@ public class Ball : MonoBehaviour
                 }
                 break;
             case State.Die:
-                disks.ChangeState(Gameplay.GameStates.Lose);
                 break;
             default:
                 return;

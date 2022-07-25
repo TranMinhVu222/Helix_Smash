@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -11,7 +9,7 @@ namespace Funzilla
     internal class Gameplay : Scene
     {
         public List<GameObject> DiskList = new List<GameObject>();
-        private GameStates _currentGameState = GameStates.Init;
+        private GameStates _currentGameState = GameStates.Idle;
         public GameObject startingText;
         public GameObject NextLevelText;
         public GameObject LoseText;
@@ -31,7 +29,7 @@ namespace Funzilla
 
         public enum GameStates
         {
-            Init,
+            Idle,
             Next,
             Win,
             Lose
@@ -39,7 +37,16 @@ namespace Funzilla
 
         private void Start()
         {
-            GameManager.Init(Init);
+            randomColor = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            CreatDisk();
+            for (int i = 0; i < 4; i++)
+            {
+                NextDisk[i].SetActive(false);
+            }
+            startingText.SetActive(true);
+            NextLevelText.SetActive(false);
+            LoseText.SetActive(false);
+            // GameManager.Init(Init);
         }
 
         public void Update()
@@ -55,18 +62,9 @@ namespace Funzilla
                     LoseText.SetActive(true);
                     if (Input.GetMouseButton(0))
                     {
-                        for (int i = 0; i < DiskList.Count; i++)
-                        {
-                            Debug.Log("da xoa");
-                            Destroy(DiskList[i]);
-                        }
-                        DiskList.Clear();
-                        if (DiskList.Count == 0)
-                        {
-                            SceneManager.ReloadScene(SceneID.Gameplay);
-                        }
                         LoseText.SetActive(false);
-                        // StartCoroutine(delayCreat());
+                        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager
+                            .GetActiveScene().buildIndex);
                     }
                     break;
                 case GameStates.Win:
@@ -78,16 +76,12 @@ namespace Funzilla
                         {
                             GainLevel += 20;
                         }
-                    } 
+                    }
                     break;
                 default:
                     return;
             }
         }
-        // IEnumerator delayCreat(){
-        //     yield return new WaitForSeconds(0.4f);
-        //     SceneManager.ReloadScene(SceneID.Gameplay);
-        // }
 
         //Start make Disk
         public void CreatDisk()
@@ -153,15 +147,13 @@ namespace Funzilla
         }
         private void Init()
         {
-            randomColor = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-            CreatDisk();
-            for (int i = 0; i < 4; i++)
-            {
-                NextDisk[i].SetActive(false);
-            }
-            startingText.SetActive(true);
-            NextLevelText.SetActive(false);
-            LoseText.SetActive(false);
+            // Load level
+            var levelIndex = (Profile.Level - 1) % LevelManager.Levels.Count;
+            var levelAsset = LevelManager.Levels[levelIndex];
+            var levelPrefab = Resources.Load<Level>($"Levels/{levelAsset}");
+            Level = Instantiate(levelPrefab, transform);
+            // Hide splash screen after game is initialized
+            levelText.text = $"Level {Profile.Level}";
             SceneManager.HideLoading();
             SceneManager.HideSplash();
         }
@@ -178,18 +170,19 @@ namespace Funzilla
         {
             switch (_currentGameState)
             {
-                case GameStates.Init:
+                case GameStates.Idle:
                     break;
                 case GameStates.Next:
                     Profile.Level++;
-                    SceneManager.ReloadScene(SceneID.Gameplay);
+                    // UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager
+                    //      .GetActiveScene().buildIndex);
+                    SceneManager.ReloadScene(SceneID.GameManager);
                     break;
                 case GameStates.Win:
                     NextLevelText.SetActive(true);
                     break;
                 case GameStates.Lose:
                     LoseText.SetActive(true);
-                    // Init();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -200,7 +193,7 @@ namespace Funzilla
         {
             switch (_currentGameState)
             {
-                case GameStates.Init:
+                case GameStates.Idle:
                     break;
                 case GameStates.Next:
                     break;

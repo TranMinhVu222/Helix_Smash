@@ -1,10 +1,10 @@
 using System;
-
+​
 #if !UNITY_EDITOR
 using System.Globalization;
 using GameAnalyticsSDK;
 #endif
-
+​
 namespace Funzilla
 {
 	internal class Config : Singleton<Config>
@@ -17,22 +17,22 @@ namespace Funzilla
 		internal static float InterstitialCappingTime { get; private set; } = 45f;
 		internal static float FirstInterstitialCappingTime { get; private set; } = 45f;
 		internal static float InterstitialRewardedVideoCappingTime { get; private set; } = 45f;
-
+​
 		internal static string IronSourceId { get; private set; } = IronSrcID;
-
+​
 		internal static bool CheatEnabled { get; private set; } = true;
 		internal static bool BannerEnabled { get; private set; } = true;
-
+​
 		private enum State
 		{
 			None,
 			Initializing,
 			Initialized
 		}
-
+​
 		private State _state = State.None;
 		internal static bool Initialized => Instance._state == State.Initialized;
-
+​
 		internal static void Init()
 		{
 			if (Instance._state == State.None)
@@ -40,7 +40,7 @@ namespace Funzilla
 				Instance._state = State.Initializing;
 			}
 		}
-
+​
 		private void Update()
 		{
 			switch (_state)
@@ -63,13 +63,13 @@ namespace Funzilla
 					throw new ArgumentOutOfRangeException();
 			}
 		}
-
+​
 #if !UNITY_EDITOR && REMOTE_ENABLED
 		private static string GetConfigValue(string name, string defaultValue)
 		{
 			return GameAnalytics.GetRemoteConfigsValueAsString("name", defaultValue);
 		}
-
+​
 		private static float GetConfigValue(string name, float defaultValue)
 		{
 			var value = GameAnalytics.GetRemoteConfigsValueAsString(name, defaultValue.ToString(CultureInfo.InvariantCulture));
@@ -81,12 +81,12 @@ namespace Funzilla
 			var value = GameAnalytics.GetRemoteConfigsValueAsString(name, defaultValue.ToString(CultureInfo.InvariantCulture));
 			return bool.TryParse(value, out var result) ? result : defaultValue;
 		}
-
+​
 		private void LoadConfigs()
 		{
 			enabled = false;
 			_state = State.Initialized;
-
+​
 			IronSourceId = GetConfigValue("ironsource_id", IronSourceId);
 			InterstitialCappingTime = GetConfigValue("interstitial_capping_time", InterstitialCappingTime);
 			InterstitialRewardedVideoCappingTime = GetConfigValue("interstitial_reward_capping_time", InterstitialRewardedVideoCappingTime);
