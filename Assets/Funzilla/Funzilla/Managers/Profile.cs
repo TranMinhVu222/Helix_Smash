@@ -21,6 +21,7 @@ namespace Funzilla
 			[SerializeField] internal int level = 1;
 			[SerializeField] internal int playCount;
 
+			[SerializeField] internal int gainLevel;
 			// First open time
 			[SerializeField] internal string firstTime;
 
@@ -128,6 +129,16 @@ namespace Funzilla
 			{
 				if (Instance._data == null) return;
 				Instance._data.level = value < 1 ? 1 : value;
+				RequestSave();
+			}
+		}
+		internal static int GainLevel
+		{
+			get => Instance._data?.gainLevel ?? 5;
+			set
+			{
+				if (Instance._data == null) return;
+				Instance._data.gainLevel = value < 5 ? 5 : value;
 				RequestSave();
 			}
 		}

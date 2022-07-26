@@ -7,11 +7,14 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.SocialPlatforms;
 using  Funzilla;
+using GameAnalyticsSDK.Setup;
+
 public class Ball : MonoBehaviour
 {
-    private const float g = 39.8f;
-    private const float _v0 = 3.5f;
+    private const float g = 9.8f;
+    private const float _v0 = 12.5f;
     private float _v;
+    private bool checkClicking;
     // private float _smax = g * _v0;
     private float _smax = 3f;
     private float _t = 0;
@@ -19,15 +22,23 @@ public class Ball : MonoBehaviour
     private float yJump =0;
     private float _s0 = 0;
     private int dem = 0;
+    private float dr;
+    private float vantocroi;
+    private float v;
     private bool furing = false;
     private bool checkFurry = false;
+    private bool checkSmash;
     public State _currentState = State.Jump;
     private int _undestroyable = 1;
     private float speedDestroy;
     private GameObject destroyDisk;
+    private Vector3 _originScale;
+    private Vector3 _scaleTo;
+    [SerializeField] private GameObject pieceBall;
     [SerializeField] private Gameplay disks;
     [SerializeField] private Image whiteCircle;
     [SerializeField] private GameObject FireFury;
+    [SerializeField] private GameObject ObjectParent;
     public enum State
     {
         Jump,Fall,Smash,Die
@@ -35,65 +46,63 @@ public class Ball : MonoBehaviour
 
     void Start()
     {
+        checkClicking = false;
         FireFury.SetActive(false);
+        pieceBall.SetActive(false);
+        gameObject.SetActive(true);
     }
-
+    
     // Update is called once per frame
     void Update()
     {
         switch (_currentState)
         {
             case State.Jump:
-                //LAM CHO QUA BONG NHAY LEN
+                checkSmash = false;
+                //TODO: QUA BONG NHAY LEN
                 yJump = _s0 + _v * _t + 0.5f * g * _t * _t;
-                transform.position = new Vector3(0, yJump, 2.5f);
-                //LAM CHO QUA BONG BIEN DANG KHI NHAY LEN
-                transform.localScale = new Vector3((float)(1 - 0.6 * _t), (float)(1 + 0.2 * _t),(float)(1 - 0.6 * _v0));
-                //PHAT HIEN THOI DIEM ROI XUONG
-                if(yJump > _smax)
+                transform.position = new Vector3(0, yJump, 4.5f);
+                
+                //TODO: QUA BONG BIEN DANG KHI NHAY LEN
+                transform.localScale = new Vector3(1.35f - 0.6f * _t, 1.35f + 0.2f * _t,1.35f - 0.8f * _t);
+                
+                //TODO: PHAT HIEN THOI DIEM ROI XUONG
+                if(yJump > _smax && _currentState != State.Smash)
                 {
                     ChangeSate(State.Fall);
                     return;
                 }
-                if (Input.GetMouseButtonDown(0) && disks.DiskList.Count > 2)
+                if (Input.GetMouseButtonDown(0) && disks.DiskList.Count > 2f && checkClicking != true)
                 {
                     ChangeSate(State.Smash);
                     return;
                 }
-                
                 break;
             case State.Fall:
-                //LAM CHO QUA BONG ROI XUONG
-                yFall = _s0 + 0.5f * -g * _t * _t;
-                transform.position = new Vector3(0, yFall, 2.5f);
-                //LAM CHO QUA BONG BIEN DANG KHI ROI
-                // transform.localScale = new Vector3(1f + 0.6f * _t,1f - 0.2f * _t,1f);
-                transform.localScale = new Vector3(1f - 0.7f * _t, 1f + 0.1f * _t,1f - 0.7f * _v0);
-                //PHAT HIEN THOI DIEM NHAY LEN
-                if (yFall < disks.DiskList[0].transform.position.y + 1f)
-                {
-                    Debug.Log("acb");
-                    transform.localScale = new Vector3(1f +  0.6f*_t,1f - 0.2f * _t,1f);
-                    ChangeSate(State.Jump);
-                    return;
-                }
-
-                if (Input.GetMouseButton(0) && disks.DiskList.Count > 2)
+                //TODO: QUA BONG ROI XUONG
+                checkSmash = false;
+                yFall = _s0 + _v * _t - 0.5f * 2f * g * _t * _t;
+                transform.position = new Vector3(0, yFall, 4.5f);
+                
+                //TODO: QUA BONG BIEN DANG KHI ROI
+                transform.localScale = new Vector3(1.35f - 0.4f * _t, 1.35f + 0.3f * _t,1.35f - 0.4f * _t);
+                
+                if (Input.GetMouseButtonDown(0) && disks.DiskList.Count > 2f && checkClicking != true)
                 {
                     ChangeSate(State.Smash);
                     return;
                 }
-                
                 break;
             case State.Smash:
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButton(0) && checkClicking != true)
                 {
                     float countdownFurry = 5.5f * Time.deltaTime;
                     int count = 0;
-                    transform.position -= new Vector3(0, 0.5f, 0)*0.5f;
-                    if (transform.position.y < disks.DiskList[0].transform.position.y+0.5f && disks.DiskList.Count > 2)
+                    Vector3 tempVec = new Vector3(0,-27f ,0 ); 
+                    transform.GetComponent<Rigidbody>().MovePosition(transform.position + tempVec*Time.deltaTime);
+                    if (transform.position.y < disks.DiskList[0].transform.position.y && disks.DiskList.Count > 2)
                     {
-                        theDestroy();
+                        // theDestroy();
                         Destroy(disks.DiskList[0]);
                         disks.DiskList.Remove(disks.DiskList[0]);
                         count++;
@@ -103,7 +112,7 @@ public class Ball : MonoBehaviour
                         }
                         _undestroyable = 1;
                     }
-                    _smax -= count * 1f;
+                    _smax -= count * 1.5f;
                 }
                 if (whiteCircle.fillAmount == 1f)
                 {
@@ -117,11 +126,6 @@ public class Ball : MonoBehaviour
                     furing = false;
                     FireFury.SetActive(false);
                     checkFurry = false;
-                }
-                if (Input.GetMouseButtonUp(0))
-                {
-                    ChangeSate(State.Fall);
-                    return;
                 }
                 break;
             case State.Die:
@@ -140,8 +144,10 @@ public class Ball : MonoBehaviour
             ChangeSate(State.Fall);
             return;
         }
+        pieceBall.transform.position = transform.position;
         _t += Time.deltaTime;
         whiteCircle.fillAmount -= 0.5f * Time.deltaTime;
+        
     }
     private void ChangeSate(State state)
     {
@@ -150,60 +156,83 @@ public class Ball : MonoBehaviour
         switch (state)
         {
             case State.Jump:
-                _s0 = disks.DiskList[0].transform.position.y+1f;
+                _s0 = transform.position.y;
                 _v = _v0;
                 _t = 0;
                 break;
             case State.Fall:
                 _s0 = transform.position.y;
-                _v = 0;
+                _v = 6f;
                 _t = 0;
                 break;
             case State.Smash:
                 break;
             case State.Die:
-                disks.ChangeState(Gameplay.GameStates.Lose);
+                checkClicking = true;
+                StartCoroutine(delayCreat());
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
         }
     }
 
-       private void theDestroy()
-        {
-            List<Transform> parent = new List<Transform>();
-            for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
-            {
-                parent.Add(disks.DiskList[0].transform.GetChild(i));
-            }
-            List<Transform> childList = new List<Transform>();
-            foreach (Transform child in parent)
-            {
-                Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
-                childList.Add(childDisk);
-                Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
-                rb.isKinematic = false;
-                rb.AddForce(0,2f,- 10f,ForceMode.Impulse);
-            }
-    
-            for (int i = 0; i < 4; i++)
-            {
-                int temp = UnityEngine.Random.Range(0, childList.Count - 1);
-                childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(temp,5f,- 10f - temp,ForceMode.Impulse);
-                childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(temp - temp,1f+temp,- 10f - temp,ForceMode.Impulse);
-            }
-    }
+       // private void theDestroy()
+       //  {
+       //      List<Transform> parent = new List<Transform>();
+       //      for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
+       //      {
+       //          parent.Add(disks.DiskList[0].transform.GetChild(i));
+       //      }
+       //      List<Transform> childList = new List<Transform>();
+       //      foreach (Transform child in parent)
+       //      {
+       //          Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
+       //          childDisk.localScale = new Vector3(2f, 1f, 2f);
+       //          childDisk.transform.parent = ObjectParent.transform ;
+       //          childList.Add(childDisk);
+       //          Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
+       //          rb.isKinematic = false;
+       //          rb.AddForce(0,6f,-8f,ForceMode.Impulse);
+       //      }
+       //      
+       //      for (int i = 0; i < 4; i++)
+       //      {
+       //          int temp = UnityEngine.Random.Range(0, childList.Count - 1);
+       //          childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(7f - temp,5f,0,ForceMode.Impulse);
+       //          childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(-7f - temp,1f+temp,0,ForceMode.Impulse);
+       //      }
+       //  }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
+        private void OnTriggerEnter(Collider other)
+        {
+            if (_currentState == State.Fall)
+            {
+               transform.localScale = new Vector3(1.35f +  0.6f*_t,1.35f - 0.3f * _t,1.35f);
+               ChangeSate(State.Jump);
+            }
+
+            if (_currentState == State.Smash)
+            {
+                checkSmash = true;
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
         {
             if (_undestroyable == 1)
             {
-                // var scaleSequence = DOTween.Sequence();
-                // scaleSequence.Append(gameObject.transform.DOScaleZ(2f, 3f))
-                //     .Append(gameObject.transform.DOScaleZ(2f, 5f));
-                ChangeSate(State.Fall);
+                ChangeSate(State.Jump);
+                _originScale = disks.DiskList[0].transform.localScale;
+                _scaleTo = _originScale * 1.5f;
+                disks.DiskList[0].transform.DOScale(_scaleTo, 0.3f)
+                    .SetEase(Ease.InOutSine)
+                    .OnComplete(() =>
+                    {
+                        disks.DiskList[0].transform.DOScale(_originScale, 0.3f)
+                            .SetEase(Ease.OutBounce);
+                    } );
                 _undestroyable--;
             }
             else
@@ -211,9 +240,15 @@ public class Ball : MonoBehaviour
                 ChangeSate(State.Die);
             }
         }
-        if (other.gameObject.CompareTag("Win_Piece")&& disks.DiskList.Count == 2f)
+        if (other.gameObject.CompareTag("Win_Piece") && disks.DiskList.Count == 2)
         {
+            checkClicking = true;
+            ChangeSate(State.Jump);
             disks.ChangeState(Gameplay.GameStates.Win);
         }
+    }
+    IEnumerator delayCreat(){
+        yield return new WaitForSeconds(0.4f);
+        disks.ChangeState(Gameplay.GameStates.Lose);
     }
 } 

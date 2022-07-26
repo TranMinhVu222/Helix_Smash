@@ -7,7 +7,7 @@ public class Disk: MonoBehaviour
 {
     private float time;
     private Vector3 rotation;
-    private float RotateAmount = 1;
+    private float RotateAmount = 2f;
     private State currenState = State.rotate;
     private float vitri;
     [SerializeField] private GameObject diskWin;
@@ -32,14 +32,14 @@ public class Disk: MonoBehaviour
 
     void RotateOb()
     {
-        transform.Rotate(Vector3.up*RotateAmount);
+        transform.Rotate(0, 90f * Time.deltaTime, 0);
     }
     
     void DiskWin()
     {
         int WinDiskPosition = gamePlay.DiskList.Count - 2;
-        diskWin.transform.position = new Vector3(0,-WinDiskPosition - 0.25f,0);
-
+        diskWin.transform.position = new Vector3(0,-WinDiskPosition*1.5f - 0.3f,0);
+        diskWin.transform.localScale = new Vector3(14f, 1.2f, 14f);
     }
 
     State changeState(State state)

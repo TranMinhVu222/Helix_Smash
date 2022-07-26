@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Funzilla;
+using  Funzilla;
 
 public class CameraManager : MonoBehaviour
 
@@ -12,7 +12,6 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Vector3 positionCam;
     private void Update()
     {
-        Debug.Log(followDisk.DiskList.Count);
         if (followDisk.DiskList.Count > 0)
         {
             transform.position = followDisk.DiskList[0].transform.position + positionCam;
