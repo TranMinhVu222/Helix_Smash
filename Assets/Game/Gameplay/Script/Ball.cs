@@ -12,7 +12,7 @@ using GameAnalyticsSDK.Setup;
 public class Ball : MonoBehaviour
 {
     private const float g = 9.8f;
-    private const float _v0 = 12.5f;
+    private const float _v0 = 15.5f;
     private float _v;
     private bool checkClicking;
     // private float _smax = g * _v0;
@@ -64,7 +64,7 @@ public class Ball : MonoBehaviour
                 transform.position = new Vector3(0, yJump, 4.5f);
                 
                 //TODO: QUA BONG BIEN DANG KHI NHAY LEN
-                transform.localScale = new Vector3(1.35f - 0.6f * _t, 1.35f + 0.2f * _t,1.35f - 0.8f * _t);
+                transform.localScale = new Vector3(1.35f - 0.9f * _t, 1.35f + 0.3f * _t,1.35f - 0.9f * _t);
                 
                 //TODO: PHAT HIEN THOI DIEM ROI XUONG
                 if(yJump > _smax && _currentState != State.Smash)
@@ -85,7 +85,7 @@ public class Ball : MonoBehaviour
                 transform.position = new Vector3(0, yFall, 4.5f);
                 
                 //TODO: QUA BONG BIEN DANG KHI ROI
-                transform.localScale = new Vector3(1.35f - 0.4f * _t, 1.35f + 0.3f * _t,1.35f - 0.4f * _t);
+                transform.localScale = new Vector3(1.35f - 0.35f * _t, 1.35f + 0.2f * _t,1.35f - 0.35f * _t);
                 
                 if (Input.GetMouseButtonDown(0) && disks.DiskList.Count > 2f && checkClicking != true)
                 {
@@ -96,13 +96,13 @@ public class Ball : MonoBehaviour
             case State.Smash:
                 if (Input.GetMouseButton(0) && checkClicking != true)
                 {
-                    float countdownFurry = 5.5f * Time.deltaTime;
+                    float countdownFurry = 4.5f * Time.deltaTime;
                     int count = 0;
                     Vector3 tempVec = new Vector3(0,-27f ,0 ); 
-                    transform.GetComponent<Rigidbody>().MovePosition(transform.position + tempVec*Time.deltaTime);
+                    transform.GetComponent<Rigidbody>().MovePosition(transform.position + tempVec * Time.deltaTime);
                     if (transform.position.y < disks.DiskList[0].transform.position.y && disks.DiskList.Count > 2)
                     {
-                        // theDestroy();
+                        theDestroy();
                         Destroy(disks.DiskList[0]);
                         disks.DiskList.Remove(disks.DiskList[0]);
                         count++;
@@ -176,39 +176,40 @@ public class Ball : MonoBehaviour
         }
     }
 
-       // private void theDestroy()
-       //  {
-       //      List<Transform> parent = new List<Transform>();
-       //      for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
-       //      {
-       //          parent.Add(disks.DiskList[0].transform.GetChild(i));
-       //      }
-       //      List<Transform> childList = new List<Transform>();
-       //      foreach (Transform child in parent)
-       //      {
-       //          Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
-       //          childDisk.localScale = new Vector3(2f, 1f, 2f);
-       //          childDisk.transform.parent = ObjectParent.transform ;
-       //          childList.Add(childDisk);
-       //          Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
-       //          rb.isKinematic = false;
-       //          rb.AddForce(0,6f,-8f,ForceMode.Impulse);
-       //      }
-       //      
-       //      for (int i = 0; i < 4; i++)
-       //      {
-       //          int temp = UnityEngine.Random.Range(0, childList.Count - 1);
-       //          childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(7f - temp,5f,0,ForceMode.Impulse);
-       //          childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(-7f - temp,1f+temp,0,ForceMode.Impulse);
-       //      }
-       //  }
+       private void theDestroy()
+        {
+            List<Transform> parent = new List<Transform>();
+            for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
+            {
+                parent.Add(disks.DiskList[0].transform.GetChild(i));
+            }
+            List<Transform> childList = new List<Transform>();
+            foreach (Transform child in parent)
+            {
+                Transform childDisk = Instantiate(child,disks.DiskList[0].transform.position + Vector3.up*1.5f, child.transform.rotation);
+                childDisk.localScale = new Vector3(2f, 1f, 2f);
+                childDisk.transform.parent = ObjectParent.transform ;
+                childList.Add(childDisk);
+                Rigidbody rb = childDisk.gameObject.GetComponent<Rigidbody>();
+                rb.isKinematic = false;
+                rb.AddForce(0,6f,-8f,ForceMode.Impulse);
+            }
+            
+            for (int i = 0; i < 4; i++)
+            {
+                int temp = UnityEngine.Random.Range(0, childList.Count - 1);
+                childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(7f - temp,5f,0,ForceMode.Impulse);
+                childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(-7f - temp,1f+temp,0,ForceMode.Impulse);
+            }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
             if (_currentState == State.Fall)
             {
-               transform.localScale = new Vector3(1.35f +  0.6f*_t,1.35f - 0.3f * _t,1.35f);
-               ChangeSate(State.Jump);
+                transform.localScale = new Vector3(1f +  0.3f*_t,1f - 0.05f * _t,1f);
+                ChangeSate(State.Jump);
+                return;
             }
 
             if (_currentState == State.Smash)
@@ -220,33 +221,33 @@ public class Ball : MonoBehaviour
         private void OnTriggerStay(Collider other)
         {
             if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
-        {
-            if (_undestroyable == 1)
             {
-                ChangeSate(State.Jump);
-                _originScale = disks.DiskList[0].transform.localScale;
-                _scaleTo = _originScale * 1.5f;
-                disks.DiskList[0].transform.DOScale(_scaleTo, 0.3f)
-                    .SetEase(Ease.InOutSine)
-                    .OnComplete(() =>
-                    {
-                        disks.DiskList[0].transform.DOScale(_originScale, 0.3f)
+                if (_undestroyable == 1)
+                {
+                    ChangeSate(State.Jump);
+                    _originScale = disks.DiskList[0].transform.localScale;
+                    _scaleTo = _originScale * 1.5f;
+                    disks.DiskList[0].transform.DOScale(_scaleTo, 0.3f)
+                        .SetEase(Ease.InOutSine)
+                        .OnComplete(() =>
+                        {
+                            disks.DiskList[0].transform.DOScale(_originScale, 0.3f)
                             .SetEase(Ease.OutBounce);
-                    } );
-                _undestroyable--;
+                        } );
+                    _undestroyable--;
+                }
+                else
+                {
+                    ChangeSate(State.Die);
+                }
             }
-            else
+            if (other.gameObject.CompareTag("Win_Piece") && disks.DiskList.Count == 2)
             {
-                ChangeSate(State.Die);
-            }
-        }
-        if (other.gameObject.CompareTag("Win_Piece") && disks.DiskList.Count == 2)
-        {
             checkClicking = true;
             ChangeSate(State.Jump);
             disks.ChangeState(Gameplay.GameStates.Win);
+            }
         }
-    }
     IEnumerator delayCreat(){
         yield return new WaitForSeconds(0.4f);
         disks.ChangeState(Gameplay.GameStates.Lose);

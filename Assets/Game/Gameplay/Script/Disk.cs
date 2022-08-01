@@ -32,7 +32,7 @@ public class Disk: MonoBehaviour
 
     void RotateOb()
     {
-        transform.Rotate(0, 90f * Time.deltaTime, 0);
+       transform.Rotate(0, 90f * Time.deltaTime, 0); 
     }
     
     void DiskWin()

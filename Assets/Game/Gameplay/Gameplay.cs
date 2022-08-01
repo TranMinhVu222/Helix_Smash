@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Funzilla;
 
 namespace Funzilla
 {
@@ -86,13 +87,13 @@ namespace Funzilla
         public void CreatDisk()
         {
             int RandomDisk = Random.Range(0, 3);
-            int countPiece = NextDisk[2].transform.childCount;
+            int countPiece = NextDisk[RandomDisk].transform.childCount;
             float lechgoc = 1.5f * 90f / 27f;    
             //Start born Disk
             for (int i = 0; i < GainLevel + Profile.GainLevel; i++)
             {
-                GameObject cloneDisk = Instantiate(NextDisk[2], new Vector3(0, i * -1.5f, 0), Quaternion
-                    .Euler(new Vector3(0, 0, 0)));
+                GameObject cloneDisk = Instantiate(NextDisk[RandomDisk], new Vector3(0, i * -1.5f, 0), Quaternion
+                    .Euler(new Vector3(0, i* -lechgoc, 0)));
                 DiskList.Add(cloneDisk);
             }
             //End born Disk
@@ -100,12 +101,12 @@ namespace Funzilla
             //Start hard level
             if (Profile.Level <= 5)
             {
-                int levelBlack = 6 - Profile.Level;
                 for (int i = 0; i < DiskList.Count; i += 4)
                 {
                     obstacle1 = DiskList[i].transform.GetChild(0).GetChild(0).gameObject;
                     obstacle1.tag = "Black_Piece";
-                    obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                    Color customColor = new Color(0.18f, 0.18f, 0.18f, 1f);
+                    obstacle1.GetComponentInChildren<MeshRenderer>().material.color = customColor;
                 }
                 for (int i = 0; i < DiskList.Count; i++)
                 {
@@ -126,7 +127,7 @@ namespace Funzilla
                 { 
                     obstacle1 = DiskList[i].transform.GetChild(0).GetChild(0).gameObject;
                     obstacle1.tag = "Black_Piece";
-                    obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                    obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.grey;
                 }
             
                 for (int i = (int) (DiskList.Count / 7); i < (int) (DiskList.Count * 2 / 7); i += 2)
@@ -135,7 +136,7 @@ namespace Funzilla
                     {
                         obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject;
                         obstacle1.tag = "Black_Piece";
-                        obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                        obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.grey;
                     }
                 }
             
@@ -145,7 +146,7 @@ namespace Funzilla
                     {
                         obstacle1 = DiskList[i].transform.GetChild(j).GetChild(0).gameObject;
                         obstacle1.tag = "Black_Piece";
-                        obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                        obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
                     }
                 }
             
@@ -154,7 +155,7 @@ namespace Funzilla
                     int RandomPiece2 = Random.Range(0, countPiece - 1);
                     obstacle1 = DiskList[i].transform.GetChild(RandomPiece2).GetChild(0).gameObject;
                     obstacle1.tag = "Black_Piece";
-                    obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.black;
+                    obstacle1.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
                 }
             
                 for (int i = 0; i < DiskList.Count; i++)

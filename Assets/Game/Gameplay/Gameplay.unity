@@ -1670,8 +1670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9843486345b12eb47b263193d957a010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followDisk: {fileID: 1715873667}
-  positionCam: {x: 0, y: 2, z: 16}
+  ball: {fileID: 1058762957}
   winDisk: {fileID: 33608543}
 --- !u!81 &1694358596
 AudioListener:
@@ -1688,13 +1687,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694358593}
-  m_LocalRotation: {x: 0, y: 0.992005, z: -0.12619898, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0.9902681, z: -0.13917309, w: 0}
+  m_LocalPosition: {x: 0, y: 3, z: 15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 42848815}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 14.5, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 16, y: 180, z: 0}
 --- !u!1 &1715873666
 GameObject:
   m_ObjectHideFlags: 0
