@@ -105,7 +105,7 @@ namespace Funzilla
                 {
                     obstacle1 = DiskList[i].transform.GetChild(0).GetChild(0).gameObject;
                     obstacle1.tag = "Black_Piece";
-                    Color customColor = new Color(0.18f, 0.18f, 0.18f, 1f);
+                    Color customColor = new Color(0.12f, 0.12f, 0.12f, 1f);
                     obstacle1.GetComponentInChildren<MeshRenderer>().material.color = customColor;
                 }
                 for (int i = 0; i < DiskList.Count; i++)
