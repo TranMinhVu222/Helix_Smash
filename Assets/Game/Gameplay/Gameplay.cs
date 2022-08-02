@@ -23,6 +23,10 @@ namespace Funzilla
         private GameObject obstacle1;
         public static int GainLevel = 50;
         private Color randomColor;
+        private float lechgoc;
+        private float _d = 1.5f;
+        private float _r = 90f;
+        private float _v = 27f;
         private static int checkWin = 0;
         internal Level Level { get; private set; }
         public static Gameplay Instance { get; private set; }
@@ -44,6 +48,12 @@ namespace Funzilla
         {
             GameManager.Init(Init);
             levelText.text = $"Level {Profile.Level}";
+            lechgoc = _d * _r / _v;  
+            for (int i = 0; i < DiskList.Count; i++)
+            {
+                DiskList[i].transform.localEulerAngles = new Vector3(0, -lechgoc * i, 0);
+            }
+            Debug.Log("bug"+lechgoc);
         }
 
         public void Update()
@@ -88,16 +98,14 @@ namespace Funzilla
         {
             int RandomDisk = Random.Range(0, 3);
             int countPiece = NextDisk[RandomDisk].transform.childCount;
-            float lechgoc = 1.5f * 90f / 27f;    
             //Start born Disk
             for (int i = 0; i < GainLevel + Profile.GainLevel; i++)
             {
                 GameObject cloneDisk = Instantiate(NextDisk[RandomDisk], new Vector3(0, i * -1.5f, 0), Quaternion
-                    .Euler(new Vector3(0, i* -lechgoc, 0)));
+                    .Euler(new Vector3(0, 0, 0)));
                 DiskList.Add(cloneDisk);
             }
             //End born Disk
-
             //Start hard level
             if (Profile.Level <= 5)
             {

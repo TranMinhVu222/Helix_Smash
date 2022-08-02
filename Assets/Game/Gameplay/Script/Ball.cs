@@ -14,6 +14,7 @@ public class Ball : MonoBehaviour
     private const float g = 9.8f;
     private const float _v0 = 15.5f;
     private float _v;
+    private float _vSmash = 27f;
     private bool checkClicking;
     // private float _smax = g * _v0;
     private float _smax = 3f;
@@ -25,6 +26,7 @@ public class Ball : MonoBehaviour
     private float dr;
     private float vantocroi;
     private float v;
+    private Vector3 tempVec;
     private bool furing = false;
     private bool checkFurry = false;
     private bool checkSmash;
@@ -51,10 +53,15 @@ public class Ball : MonoBehaviour
         pieceBall.SetActive(false);
         gameObject.SetActive(true);
     }
-    
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetMouseButton(0))
+        {
+            // tempVec = new Vector3(0,-1f * _vSmash,0 ); 
+            // transform.GetComponent<Rigidbody>().MovePosition(transform.position + tempVec);
+            transform.Translate(transform.up * -27f *Time.deltaTime);
+        }
         switch (_currentState)
         {
             case State.Jump:
@@ -98,8 +105,6 @@ public class Ball : MonoBehaviour
                 {
                     float countdownFurry = 4.5f * Time.deltaTime;
                     int count = 0;
-                    Vector3 tempVec = new Vector3(0,-27f ,0 ); 
-                    transform.GetComponent<Rigidbody>().MovePosition(transform.position + tempVec * Time.deltaTime);
                     if (transform.position.y < disks.DiskList[0].transform.position.y && disks.DiskList.Count > 2)
                     {
                         theDestroy();
@@ -141,7 +146,7 @@ public class Ball : MonoBehaviour
         }
         if (Input.GetMouseButtonUp(0))
         {
-            ChangeSate(State.Fall);
+            ChangeSate(State.Jump);
             return;
         }
         pieceBall.transform.position = transform.position;
@@ -176,8 +181,8 @@ public class Ball : MonoBehaviour
         }
     }
 
-       private void theDestroy()
-        {
+    private void theDestroy()
+    {
             List<Transform> parent = new List<Transform>();
             for (int i = 0; i < disks.DiskList[0].transform.childCount; i++)
             {
@@ -201,10 +206,10 @@ public class Ball : MonoBehaviour
                 childList[temp].gameObject.GetComponent<Rigidbody>().AddForce(7f - temp,5f,0,ForceMode.Impulse);
                 childList[temp+1].gameObject.GetComponent<Rigidbody>().AddForce(-7f - temp,1f+temp,0,ForceMode.Impulse);
             }
-        }
+    }
 
-        private void OnTriggerEnter(Collider other)
-        {
+    private void OnTriggerEnter(Collider other)
+    {
             if (_currentState == State.Fall)
             {
                 transform.localScale = new Vector3(1f +  0.3f*_t,1f - 0.05f * _t,1f);
@@ -216,10 +221,6 @@ public class Ball : MonoBehaviour
             {
                 checkSmash = true;
             }
-        }
-
-        private void OnTriggerStay(Collider other)
-        {
             if(_currentState == State.Smash && other.gameObject.CompareTag("Black_Piece") && checkFurry == false)
             {
                 if (_undestroyable == 1)
@@ -232,7 +233,7 @@ public class Ball : MonoBehaviour
                         .OnComplete(() =>
                         {
                             disks.DiskList[0].transform.DOScale(_originScale, 0.3f)
-                            .SetEase(Ease.OutBounce);
+                                .SetEase(Ease.OutBounce);
                         } );
                     _undestroyable--;
                 }
@@ -243,11 +244,11 @@ public class Ball : MonoBehaviour
             }
             if (other.gameObject.CompareTag("Win_Piece") && disks.DiskList.Count == 2)
             {
-            checkClicking = true;
-            ChangeSate(State.Jump);
-            disks.ChangeState(Gameplay.GameStates.Win);
+                checkClicking = true;
+                ChangeSate(State.Jump);
+                disks.ChangeState(Gameplay.GameStates.Win);
             }
-        }
+    }
     IEnumerator delayCreat(){
         yield return new WaitForSeconds(0.4f);
         disks.ChangeState(Gameplay.GameStates.Lose);
